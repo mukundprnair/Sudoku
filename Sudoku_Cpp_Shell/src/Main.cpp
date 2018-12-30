@@ -35,9 +35,6 @@ int main ( int argc, char *argv[] )
 		if ( token == "MRV" )
 			var_sh = "MinimumRemainingValue";
 
-		else if ( token == "DEG" )
-			var_sh = "Degree";
-
 		else if ( token == "MAD" )
 			var_sh = "MRVwithTieBreaker";
 

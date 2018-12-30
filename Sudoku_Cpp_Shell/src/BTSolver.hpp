@@ -27,7 +27,6 @@ public:
 	// Variable Selectors (Implement these)
 	Variable* getfirstUnassignedVariable ( void );
 	Variable* getMRV            ( void );
-	Variable* getDegree         ( void );
 	Variable* MRVwithTieBreaker ( void );
 	Variable* getTournVar       ( void );
 

@@ -28,9 +28,6 @@ def main ( ):
         if arg == "MRV":
             var_sh = "MinimumRemainingValue"
 
-        elif arg == "DEG":
-            var_sh = "Degree"
-
         elif arg == "MAD":
             var_sh = "MRVwithTieBreaker"
 

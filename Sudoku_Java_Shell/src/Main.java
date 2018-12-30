@@ -25,9 +25,6 @@ public class Main
 			if ( token.equals( "MRV" ) )
 				var_sh = "MinimumRemainingValue";
 
-			else if ( token.equals( "DEG" ) )
-				var_sh = "Degree";
-
 			else if ( token.equals( "MAD" ) )
 				var_sh = "MRVwithTieBreaker";
 

@@ -104,16 +104,6 @@ Variable* BTSolver::getMRV ( void )
 }
 
 /**
- * Part 2 TODO: Implement the Degree Heuristic
- *
- * Return: The unassigned variable with the most unassigned neighbors
- */
-Variable* BTSolver::getDegree ( void )
-{
-	return nullptr;
-}
-
-/**
  * Part 2 TODO: Implement the Minimum Remaining Value Heuristic
  *                with Degree Heuristic as a Tie Breaker
  *
