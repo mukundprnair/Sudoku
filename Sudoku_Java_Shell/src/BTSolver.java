@@ -266,9 +266,6 @@ public class BTSolver
 			case "MinimumRemainingValue":
 				return getMRV();
 
-			case "Degree":
-				return getDegree();
-
 			case "MRVwithTieBreaker":
 				return MRVwithTieBreaker();
 

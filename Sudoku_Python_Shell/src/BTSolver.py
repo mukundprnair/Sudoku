@@ -206,9 +206,6 @@ class BTSolver:
         if self.varHeuristics == "MinimumRemainingValue":
             return self.getMRV()
 
-        if self.varHeuristics == "Degree":
-            return self.getDegree()
-
         if self.varHeuristics == "MRVwithTieBreaker":
             return self.MRVwithTieBreaker()
 

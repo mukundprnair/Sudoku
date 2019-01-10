@@ -234,9 +234,6 @@ Variable* BTSolver::selectNextVariable ( void )
 	if ( varHeuristics == "MinimumRemainingValue" )
 		return getMRV();
 
-	if ( varHeuristics == "Degree" )
-		return getDegree();
-
 	if ( varHeuristics == "MRVwithTieBreaker" )
 		return MRVwithTieBreaker();
 
