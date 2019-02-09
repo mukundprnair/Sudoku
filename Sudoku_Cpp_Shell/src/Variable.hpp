@@ -42,6 +42,7 @@ public:
 	bool operator!= ( const Variable &other ) const;
 
 	// Modifiers
+	void unassign ();
 	void setModified ( bool modified );
 	void assignValue ( int val );
 	void updateDomain ( Domain d );
@@ -62,6 +63,7 @@ private:
 	int r, c, b;
 	bool modified;
 	bool changeable;
+	bool assigned;
 	std::string name;
 	int oldSize;
 	static int namingCounter;

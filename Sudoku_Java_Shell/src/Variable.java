@@ -16,6 +16,7 @@ public class Variable implements Iterable<Integer>
 	private int row, col, block;
 	private boolean modified;
 	private boolean changeable;
+	private boolean assigned;
 	private String name;
 
 	private int oldSize;
@@ -34,9 +35,11 @@ public class Variable implements Iterable<Integer>
 		this.oldSize = size();
 		this.modified = false;
 		this.changeable = true;
+		this.assigned = false;
 
 		if ( size() == 1 )
 		{
+			assigned = true;
 			modified = true;
 			changeable = false;
 		}
@@ -64,7 +67,7 @@ public class Variable implements Iterable<Integer>
 
 	public boolean isAssigned ( )
 	{
-		return size() == 1;
+		return assigned;
 	}
 
 	public boolean isModified ( )
@@ -127,12 +130,17 @@ public class Variable implements Iterable<Integer>
 		this.domain.setModified( modified );
 	}
 
+	public void unassign(){
+		this.assigned = false;
+	}
+
 	// Assign a value to the variable
 	public void assignValue ( int val )
 	{
 		if ( ! changeable )
 			return;
 
+		this.assigned = true;
 		setDomain( new Domain( val ) );
 	}
 

@@ -66,6 +66,7 @@ class Trail:
             v = vPair[0]
             v.setDomain( vPair[1] )
             v.setModified( False )
+            v.unassign()
             size -= 1
 
     # Clears the trail

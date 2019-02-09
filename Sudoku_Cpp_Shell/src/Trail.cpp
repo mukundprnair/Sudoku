@@ -68,6 +68,7 @@ void Trail::undo ( void )
 		trailStack.pop();
 		vPair.first->setDomain(vPair.second);
 		vPair.first->setModified( false );
+		vPair.first->unassign();
 	}
 }
 

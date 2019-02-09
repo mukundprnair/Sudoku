@@ -55,6 +55,8 @@ def main ( ):
         print(sudokudata)
 
         solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
+        if cc in ["forwardChecking","norvigCheck","tournCC"]:
+            solver.checkConsistency()
         solver.solve()
 
         if solver.hassolution:
@@ -82,6 +84,8 @@ def main ( ):
             sudokudata = SudokuBoard.SudokuBoard( filepath=os.path.join( file, f ) )
 
             solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
+            if cc in ["forwardChecking","norvigCheck","tournCC"]:
+                solver.checkConsistency()
             solver.solve()
 
             if solver.hassolution:
@@ -97,6 +101,8 @@ def main ( ):
     print(sudokudata)
 
     solver = BTSolver.BTSolver( sudokudata, trail, val_sh, var_sh, cc )
+    if cc in ["forwardChecking","norvigCheck","tournCC"]:
+        solver.checkConsistency()
     solver.solve()
 
     if solver.hassolution:

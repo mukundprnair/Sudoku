@@ -66,6 +66,8 @@ int main ( int argc, char *argv[] )
 		cout << board.toString() << endl;
 
 		BTSolver solver = BTSolver( board, &trail, val_sh, var_sh, cc );
+		if (cc == "forwardChecking" or cc == "norvigCheck" or cc == "tournCC")
+            solver.checkConsistency();
 		solver.solve();
 
 		if ( solver.haveSolution() )
@@ -111,6 +113,8 @@ int main ( int argc, char *argv[] )
 			SudokuBoard board( individualFile );
 
 			BTSolver solver = BTSolver( board, &trail, val_sh, var_sh, cc );
+			if (cc == "forwardChecking" or cc == "norvigCheck" or cc == "tournCC")
+	            solver.checkConsistency();
 			solver.solve();
 
 			if ( solver.haveSolution() )
@@ -131,6 +135,8 @@ int main ( int argc, char *argv[] )
 	cout << board.toString() << endl;
 
 	BTSolver solver = BTSolver( board, &trail, val_sh, var_sh, cc );
+	if (cc == "forwardChecking" or cc == "norvigCheck" or cc == "tournCC")
+					solver.checkConsistency();
 	solver.solve();
 
 	if ( solver.haveSolution() )

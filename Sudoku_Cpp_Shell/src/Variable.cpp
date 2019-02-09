@@ -19,11 +19,13 @@ Variable::Variable ( Domain::ValueSet possible_Values, int row, int col, int blo
 	oldSize = size();
 	modified = false;
 	changeable = true;
+	assigned = false;
 
 	if ( domain.size() == 1 )
 	{
 		modified = true;
 		changeable = false;
+		assigned = true;
 	}
 }
 
@@ -48,7 +50,7 @@ bool Variable::isChangeable( void ) const
 
 bool Variable::isAssigned( void ) const
 {
-	return size() == 1;
+	return assigned;
 }
 
 bool Variable::isModified( void ) const
@@ -114,6 +116,11 @@ bool Variable::operator!= ( const Variable &other ) const
 // Modifiers
 // =====================================================================
 
+void Variable::unassign()
+{
+	assigned = false;
+}
+
 void Variable::setModified( bool modified )
 {
 	this->modified = modified;
@@ -126,6 +133,7 @@ void Variable::assignValue ( int val )
 	if ( ! changeable )
 		return;
 
+	assigned = true;
 	setDomain( Domain( val ) );
 }
 

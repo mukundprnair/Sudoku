@@ -56,6 +56,9 @@ public class Main
 			System.out.println( board.toString() );
 
 			BTSolver solver = new BTSolver( board, trail, val_sh, var_sh, cc );
+			if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
+				solver.checkConsistency();
+			}
 			solver.solve();
 
 			if ( solver.hasSolution() )
@@ -94,6 +97,9 @@ public class Main
 				SudokuBoard board = new SudokuBoard( listOfBoards[i] );
 
 				BTSolver solver = new BTSolver( board, trail, val_sh, var_sh, cc );
+				if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
+					solver.checkConsistency();
+				}
 				solver.solve();
 
 				if ( solver.hasSolution() )
@@ -112,6 +118,9 @@ public class Main
 		System.out.println( board.toString() );
 
 		BTSolver solver = new BTSolver( board, trail, val_sh, var_sh, cc );
+		if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
+			solver.checkConsistency();
+		}
 		solver.solve();
 
 		if ( solver.hasSolution() )

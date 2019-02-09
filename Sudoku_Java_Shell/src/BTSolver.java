@@ -241,7 +241,7 @@ public class BTSolver
 		}
 	}
 
-	private boolean checkConsistency ( )
+	public boolean checkConsistency ( )
 	{
 		switch ( cChecks )
 		{

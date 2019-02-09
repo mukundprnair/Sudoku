@@ -81,6 +81,7 @@ public class Trail
 				Variable v = (Variable) vPair[0];
 				v.setDomain((Domain) vPair[1]);
 				v.setModified( false );
+				v.unassign();
 			}
 		}
 		catch ( EmptyStackException e )
@@ -96,4 +97,3 @@ public class Trail
 		trailMarker.clear();
 	}
 }
-

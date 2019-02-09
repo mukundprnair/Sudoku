@@ -23,11 +23,13 @@ class Variable:
         self.col = col
         self.block = block
         if self.size() == 1:
+            self.assigned = True
             self.modified = True
             self.changeable = False
         else:
             self.modified = False
             self.changeable = True
+            self.assigned = False
 
     def copy ( self, v ):
         self.domain = v.domain
@@ -45,7 +47,7 @@ class Variable:
         return self.changeable
 
     def isAssigned ( self ):
-        return self.size() == 1
+        return self.assigned
 
     def isModified ( self ):
         return self.modified
@@ -77,11 +79,15 @@ class Variable:
         self.modified = mod
         self.domain.modified = mod
 
+    def unassign(self):
+        self.assigned = False
+
     # Assign a value to the variable
     def assignValue ( self, val ):
         if not self.changeable:
             return
 
+        self.assigned = True
         self.setDomain( Domain.Domain( val ) )
 
     # Sets the domain of the variable
