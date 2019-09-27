@@ -1,6 +1,9 @@
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class BTSolver
 {
@@ -48,6 +51,53 @@ public class BTSolver
 		return true;
 	}
 
+	// =================================================================
+	// Arc Consistency
+	// =================================================================
+	public boolean arcConsistency ( )
+    {
+        List<Variable> toAssign = new ArrayList<Variable>();
+        List<Constraint> RMC = network.getModifiedConstraints();
+        for(int i = 0; i < RMC.size(); ++i)
+        {
+            List<Variable> LV = RMC.get(i).vars;
+            for(int j = 0; j < LV.size(); ++j)
+            {
+                if(LV.get(j).isAssigned())
+                {
+                    List<Variable> Neighbors = network.getNeighborsOfVariable(LV.get(j));
+                    int assignedValue = LV.get(j).getAssignment();
+                    for(int k = 0; k < Neighbors.size(); ++k)
+                    {
+                        Domain D = Neighbors.get(k).getDomain();
+                        if(D.contains(assignedValue))
+                        {
+                            if(D.size() == 1)
+                                return false;
+                            if(D.size() == 2)
+                                toAssign.add(Neighbors.get(k));
+                            trail.push(Neighbors.get(k));
+                            Neighbors.get(k).removeValueFromDomain(assignedValue);
+                        }
+                    }
+                }
+            }
+        }
+        if(!toAssign.isEmpty())
+        {
+            for(int i = 0; i < toAssign.size(); ++i)
+            {
+                Domain D = toAssign.get(i).getDomain();
+                ArrayList<Integer> assign = D.getValues();
+                trail.push(toAssign.get(i));
+                toAssign.get(i).assignValue(assign.get(0));
+            }
+            return arcConsistency();
+        }
+        return network.isConsistent();
+    }
+
+
 	/**
 	 * Part 1 TODO: Implement the Forward Checking Heuristic
 	 *
@@ -60,9 +110,9 @@ public class BTSolver
 	 * Note: remember to trail.push variables before you change their domain
 	 * Return: true is assignment is consistent, false otherwise
 	 */
-	private boolean forwardChecking ( )
+	public Map.Entry<HashMap<Variable,Domain>, Boolean> forwardChecking ( )
 	{
-		return false;
+		return Pair.of(null, false);
 	}
 
 	/**
@@ -80,9 +130,9 @@ public class BTSolver
 	 * Note: remember to trail.push variables before you change their domain
 	 * Return: true is assignment is consistent, false otherwise
 	 */
-	private boolean norvigCheck ( )
+	public Map.Entry<HashMap<Variable,Integer>,Boolean> norvigCheck ( )
 	{
-		return false;
+        return Pair.of(null,false);
 	}
 
 	/**
@@ -116,9 +166,9 @@ public class BTSolver
 	 *
 	 * Return: The unassigned variable with the smallest domain
 	 */
-	private Variable getMRV ( )
+	public Variable getMRV ( )
 	{
-		return null;
+        return null;
 	}
 
 	/**
@@ -128,10 +178,10 @@ public class BTSolver
 	 * Return: The unassigned variable with, first, the smallest domain
 	 *         and, second, the most unassigned neighbors
 	 */
-	private Variable MRVwithTieBreaker ( )
+	public List<Variable> MRVwithTieBreaker ( )
 	{
-		return null;
-	}
+        return null;
+    }
 
 	/**
 	 * Optional TODO: Implement your own advanced Variable Heuristic
@@ -175,7 +225,7 @@ public class BTSolver
 	 */
 	public List<Integer> getValuesLCVOrder ( Variable v )
 	{
-		return null;
+        return null;
 	}
 
 	/**
@@ -246,10 +296,10 @@ public class BTSolver
 		switch ( cChecks )
 		{
 			case "forwardChecking":
-				return forwardChecking();
+				return forwardChecking().getValue();
 
 			case "norvigCheck":
-				return norvigCheck();
+				return norvigCheck().getValue();
 
 			case "tournCC":
 				return getTournCC();
@@ -259,7 +309,7 @@ public class BTSolver
 		}
 	}
 
-	private Variable selectNextVariable ( )
+	public Variable selectNextVariable ( )
 	{
 		switch ( varHeuristics )
 		{
@@ -267,7 +317,7 @@ public class BTSolver
 				return getMRV();
 
 			case "MRVwithTieBreaker":
-				return MRVwithTieBreaker();
+				return MRVwithTieBreaker().get(0);
 
 			case "tournVar":
 				return getTournVar();

@@ -23,7 +23,8 @@ RAW_SOURCES = \
 	Domain.java\
 	SudokuBoard.java\
 	Trail.java\
-	Variable.java
+	Variable.java\
+	Pair.java
 
 SOURCE_DIR = src
 BIN_DIR = bin

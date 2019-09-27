@@ -195,4 +195,11 @@ public class Variable implements Iterable<Integer>
 		sb.append("}");
 		return sb.toString();
 	}
+
+	// =================================================================
+	// Reset Naming Counter
+	// =================================================================
+	public static void resetCounter(){
+		namingCounter = 1;
+	}
 }

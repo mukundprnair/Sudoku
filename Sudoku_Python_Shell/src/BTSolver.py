@@ -5,6 +5,7 @@ import Trail
 import Constraint
 import ConstraintNetwork
 import time
+import random
 
 class BTSolver:
 
@@ -42,12 +43,31 @@ class BTSolver:
         (1) If a variable is assigned then eliminate that value from
             the square's neighbors.
 
-        Note: remember to trail.push variables before you change their domain
+        Note: remember to trail.push variables before you assign them
         Return: true is assignment is consistent, false otherwise
     """
     def forwardChecking ( self ):
-        return False
+        return ({},False)
 
+    # =================================================================
+	# Arc Consistency
+	# =================================================================
+    def arcConsistency( self ):
+        assignedVars = []
+        for c in self.network.constraints:
+            for v in c.vars:
+                if v.isAssigned():
+                    assignedVars.append(v)
+        while len(assignedVars) != 0:
+            av = assignedVars.pop(0)
+            for neighbor in self.network.getNeighborsOfVariable(av):
+                if neighbor.isChangeable and not neighbor.isAssigned() and neighbor.getDomain().contains(av.getAssignment()):
+                    neighbor.removeValueFromDomain(av.getAssignment())
+                    if neighbor.domain.size() == 1:
+                        neighbor.assignValue(neighbor.domain.values[0])
+                        assignedVars.append(neighbor)
+
+    
     """
         Part 2 TODO: Implement both of Norvig's Heuristics
 
@@ -60,11 +80,11 @@ class BTSolver:
         (2) If a constraint has only one possible place for a value
             then put the value there.
 
-        Note: remember to trail.push variables before you change their domain
+        Note: remember to trail.push variables before you assign them
         Return: true is assignment is consistent, false otherwise
     """
     def norvigCheck ( self ):
-        return False
+        return ({}, False)
 
     """
          Optional TODO: Implement your own advanced Constraint Propagation
@@ -73,7 +93,7 @@ class BTSolver:
          your program into a tournament.
      """
     def getTournCC ( self ):
-        return None
+        return False
 
     # ==================================================================
     # Variable Selectors
@@ -94,6 +114,14 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
+        return None
+
+    """
+        Part 2 TODO: Implement the Degree Heuristic
+
+        Return: The unassigned variable with the most unassigned neighbors
+    """
+    def getDegree ( self ):
         return None
 
     """
@@ -191,10 +219,10 @@ class BTSolver:
 
     def checkConsistency ( self ):
         if self.cChecks == "forwardChecking":
-            return self.forwardChecking()
+            return self.forwardChecking()[1]
 
         if self.cChecks == "norvigCheck":
-            return self.norvigCheck()
+            return self.norvigCheck()[1]
 
         if self.cChecks == "tournCC":
             return self.getTournCC()
@@ -206,8 +234,11 @@ class BTSolver:
         if self.varHeuristics == "MinimumRemainingValue":
             return self.getMRV()
 
+        if self.varHeuristics == "Degree":
+            return self.getDegree()
+
         if self.varHeuristics == "MRVwithTieBreaker":
-            return self.MRVwithTieBreaker()
+            return self.MRVwithTieBreaker()[0]
 
         if self.varHeuristics == "tournVar":
             return self.getTournVar()

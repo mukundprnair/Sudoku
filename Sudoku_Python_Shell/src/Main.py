@@ -89,8 +89,7 @@ def main ( ):
             solver.solve()
 
             if solver.hassolution:
-                numSolutions += 1
-            trail.clear()
+                numSolutions += 1;
 
         print ( "Solutions Found: " + str(numSolutions) )
         print ( "Trail Pushes: " + str(trail.getPushCount()) )

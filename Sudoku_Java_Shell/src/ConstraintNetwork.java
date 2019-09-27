@@ -13,8 +13,8 @@ public class ConstraintNetwork
 	// Properties
 	// =================================================================
 
-	private List<Constraint> constraints;
-	private List<Variable> variables;
+	private static List<Constraint> constraints;
+	private static List<Variable> variables;
 
 	// =================================================================
 	// Constructors
@@ -28,6 +28,7 @@ public class ConstraintNetwork
 
 	public ConstraintNetwork ( SudokuBoard sboard )
 	{
+		Variable.resetCounter();
 		int [][] board = sboard.getBoard();
 
 		List<Variable> temp = new ArrayList<Variable>();

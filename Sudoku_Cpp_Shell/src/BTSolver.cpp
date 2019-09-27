@@ -10,7 +10,7 @@ BTSolver::BTSolver ( SudokuBoard input, Trail* _trail,  string val_sh, string va
 : sudokuGrid( input.get_p(), input.get_q(), input.get_board() ), network( input )
 {
 	valHeuristics = val_sh;
-	varHeuristics = var_sh;
+	varHeuristics = var_sh; 
 	cChecks =  cc;
 
 	trail = _trail;
@@ -30,6 +30,52 @@ bool BTSolver::assignmentsCheck ( void )
 	return true;
 }
 
+// =================================================================
+// Arc Consistency
+// =================================================================
+bool BTSolver::arcConsistency ( void )
+{
+    vector<Variable*> toAssign;
+    vector<Constraint*> RMC = network.getModifiedConstraints();
+    for (int i = 0; i < RMC.size(); ++i)
+    {
+        vector<Variable*> LV = RMC[i]->vars;
+        for (int j = 0; j < LV.size(); ++j)
+        {
+            if(LV[j]->isAssigned())
+            {
+                vector<Variable*> Neighbors = network.getNeighborsOfVariable(LV[j]);
+                int assignedValue = LV[j]->getAssignment();
+                for (int k = 0; k < Neighbors.size(); ++k)
+                {
+                    Domain D = Neighbors[k]->getDomain();
+                    if(D.contains(assignedValue))
+                    {
+                        if (D.size() == 1)
+                            return false;
+                        if (D.size() == 2)
+                            toAssign.push_back(Neighbors[k]);
+                        trail->push(Neighbors[k]);
+                        Neighbors[k]->removeValueFromDomain(assignedValue);
+                    }
+                }
+            }
+        }
+    }
+    if (!toAssign.empty())
+    {
+        for (int i = 0; i < toAssign.size(); ++i)
+        {
+            Domain D = toAssign[i]->getDomain();
+            vector<int> assign = D.getValues();
+            trail->push(toAssign[i]);
+            toAssign[i]->assignValue(assign[0]);
+        }
+        return arcConsistency();
+    }
+    return network.isConsistent();
+}
+
 /**
  * Part 1 TODO: Implement the Forward Checking Heuristic
  *
@@ -42,9 +88,9 @@ bool BTSolver::assignmentsCheck ( void )
  * Note: remember to trail.push variables before you change their domain
  * Return: true is assignment is consistent, false otherwise
  */
-bool BTSolver::forwardChecking ( void )
+pair<map<Variable*,Domain>,bool> BTSolver::forwardChecking ( void )
 {
-	return false;
+	return make_pair(map<Variable*, Domain>(), false);
 }
 
 /**
@@ -62,9 +108,9 @@ bool BTSolver::forwardChecking ( void )
  * Note: remember to trail.push variables before you change their domain
  * Return: true is assignment is consistent, false otherwise
  */
-bool BTSolver::norvigCheck ( void )
+pair<map<Variable*,int>,bool> BTSolver::norvigCheck ( void )
 {
-	return false;
+    return make_pair(map<Variable*, int>(), false);
 }
 
 /**
@@ -100,7 +146,7 @@ Variable* BTSolver::getfirstUnassignedVariable ( void )
  */
 Variable* BTSolver::getMRV ( void )
 {
-	return nullptr;
+    return nullptr;
 }
 
 /**
@@ -110,9 +156,9 @@ Variable* BTSolver::getMRV ( void )
  * Return: The unassigned variable with the smallest domain and involved
  *             in the most constraints
  */
-Variable* BTSolver::MRVwithTieBreaker ( void )
+vector<Variable*> BTSolver::MRVwithTieBreaker ( void )
 {
-	return nullptr;
+    return vector<Variable*>();
 }
 
 /**
@@ -149,7 +195,7 @@ vector<int> BTSolver::getValuesInOrder ( Variable* v )
  */
 vector<int> BTSolver::getValuesLCVOrder ( Variable* v )
 {
-	return vector<int>();
+    return vector<int>();
 }
 
 /**
@@ -218,10 +264,10 @@ void BTSolver::solve ( void )
 bool BTSolver::checkConsistency ( void )
 {
 	if ( cChecks == "forwardChecking" )
-		return forwardChecking();
+		return forwardChecking().second;
 
 	if ( cChecks == "norvigCheck" )
-		return norvigCheck();
+		return norvigCheck().second;
 
 	if ( cChecks == "tournCC" )
 		return getTournCC();
@@ -235,7 +281,7 @@ Variable* BTSolver::selectNextVariable ( void )
 		return getMRV();
 
 	if ( varHeuristics == "MRVwithTieBreaker" )
-		return MRVwithTieBreaker();
+		return MRVwithTieBreaker()[0];
 
 	if ( varHeuristics == "tournVar" )
 		return getTournVar();

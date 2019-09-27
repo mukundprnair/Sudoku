@@ -20,14 +20,15 @@ public:
 
 	// Consistency Checks (Implement these)
 	bool assignmentsCheck ( void );
-	bool forwardChecking  ( void );
-	bool norvigCheck      ( void );
+    std::pair<std::map<Variable*,Domain>,bool> forwardChecking  ( void );
+    bool arcConsistency ( void );
+    std::pair<std::map<Variable*,int>,bool> norvigCheck      ( void );
 	bool getTournCC       ( void );
 
 	// Variable Selectors (Implement these)
 	Variable* getfirstUnassignedVariable ( void );
 	Variable* getMRV            ( void );
-	Variable* MRVwithTieBreaker ( void );
+    std::vector<Variable*> MRVwithTieBreaker ( void );
 	Variable* getTournVar       ( void );
 
 	// Value Selectors (Implement these)

@@ -43,7 +43,7 @@ private:
 
 	Board board;
 
-	bool check    ( int row, int col, int value ) const;
+    bool check    ( int row, int col, int value ) const;
 	bool checkRow ( int row, int value ) const;
 	bool checkCol ( int col, int value ) const;
 	bool checkBox ( int row, int col, int value ) const;
