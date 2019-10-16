@@ -108,7 +108,9 @@ public class BTSolver
 	 *     the square's neighbors.
 	 *
 	 * Note: remember to trail.push variables before you change their domain
-	 * Return: true is assignment is consistent, false otherwise
+	 *
+	 * Return: a pair of a HashMap and a Boolean. The map contains the pointers to all MODIFIED variables, mapped to their MODIFIED domain. 
+	 *         The Boolean is true if assignment is consistent, false otherwise.
 	 */
 	public Map.Entry<HashMap<Variable,Domain>, Boolean> forwardChecking ( )
 	{
@@ -128,7 +130,9 @@ public class BTSolver
 	 *     then put the value there.
 	 *
 	 * Note: remember to trail.push variables before you change their domain
-	 * Return: true is assignment is consistent, false otherwise
+	 * Return: a pair of a map and a Boolean. The map contains the pointers to all variables that were assigned during the whole 
+	 *         NorvigCheck propagation, and mapped to the values that they were assigned. 
+	 *         The Boolean is true if assignment is consistent, false otherwise.
 	 */
 	public Map.Entry<HashMap<Variable,Integer>,Boolean> norvigCheck ( )
 	{
@@ -175,8 +179,10 @@ public class BTSolver
 	 * Part 2 TODO: Implement the Minimum Remaining Value Heuristic
 	 *                with Degree Heuristic as a Tie Breaker
 	 *
-	 * Return: The unassigned variable with, first, the smallest domain
-	 *         and, second, the most unassigned neighbors
+	 * Return: The unassigned variable with the smallest domain and affecting the most unassigned neighbors.
+	 *         If there are multiple variables that have the same smallest domain with the same number 
+	 *         of unassigned neighbors, add them to the list of Variables.
+	 *         If there is only one variable, return the list of size 1 containing that variable.
 	 */
 	public List<Variable> MRVwithTieBreaker ( )
 	{

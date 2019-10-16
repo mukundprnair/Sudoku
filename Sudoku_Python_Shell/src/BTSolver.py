@@ -44,7 +44,8 @@ class BTSolver:
             the square's neighbors.
 
         Note: remember to trail.push variables before you assign them
-        Return: true is assignment is consistent, false otherwise
+        Return: a tuple of a dictionary and a bool. The dictionary contains all MODIFIED variables, mapped to their MODIFIED domain.
+                The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
         return ({},False)
@@ -81,7 +82,9 @@ class BTSolver:
             then put the value there.
 
         Note: remember to trail.push variables before you assign them
-        Return: true is assignment is consistent, false otherwise
+        Return: a pair of a dictionary and a bool. The dictionary contains all variables 
+		        that were ASSIGNED during the whole NorvigCheck propagation, and mapped to the values that they were assigned.
+                The bool is true if assignment is consistent, false otherwise.
     """
     def norvigCheck ( self ):
         return ({}, False)
@@ -128,8 +131,9 @@ class BTSolver:
         Part 2 TODO: Implement the Minimum Remaining Value Heuristic
                        with Degree Heuristic as a Tie Breaker
 
-        Return: The unassigned variable with, first, the smallest domain
-                and, second, the most unassigned neighbors
+        Return: The unassigned variable with the smallest domain and affecting the  most unassigned neighbors.
+                If there are multiple variables that have the same smallest domain with the same number of unassigned neighbors, add them to the list of Variables.
+                If there is only one variable, return the list of size 1 containing that variable.
     """
     def MRVwithTieBreaker ( self ):
         return None

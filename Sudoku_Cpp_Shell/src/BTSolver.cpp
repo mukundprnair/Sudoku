@@ -86,7 +86,8 @@ bool BTSolver::arcConsistency ( void )
  *     the square's neighbors.
  *
  * Note: remember to trail.push variables before you change their domain
- * Return: true is assignment is consistent, false otherwise
+ * Return: a pair of a map and a bool. The map contains the pointers to all MODIFIED variables, mapped to their MODIFIED domain. 
+ * 		   The bool is true if assignment is consistent, false otherwise.
  */
 pair<map<Variable*,Domain>,bool> BTSolver::forwardChecking ( void )
 {
@@ -106,7 +107,9 @@ pair<map<Variable*,Domain>,bool> BTSolver::forwardChecking ( void )
  *     then put the value there.
  *
  * Note: remember to trail.push variables before you change their domain
- * Return: true is assignment is consistent, false otherwise
+ * Return: a pair of a map and a bool. The map contains the pointers to all variables that were assigned during 
+ *         the whole NorvigCheck propagation, and mapped to the values that they were assigned. 
+ *         The bool is true if assignment is consistent, false otherwise.
  */
 pair<map<Variable*,int>,bool> BTSolver::norvigCheck ( void )
 {
@@ -153,8 +156,10 @@ Variable* BTSolver::getMRV ( void )
  * Part 2 TODO: Implement the Minimum Remaining Value Heuristic
  *                with Degree Heuristic as a Tie Breaker
  *
- * Return: The unassigned variable with the smallest domain and involved
- *             in the most constraints
+ * Return: The unassigned variable with the smallest domain and affecting the most unassigned neighbors.
+ * 		   If there are multiple variables that have the same smallest domain with the same number 
+ * 		   of unassigned neighbors, add them to the vector of Variables.
+ *         If there is only one variable, return the vector of size 1 containing that variable.
  */
 vector<Variable*> BTSolver::MRVwithTieBreaker ( void )
 {
