@@ -273,6 +273,7 @@ int BTSolver::solve ( float time_left)
 		// Otherwise backtrack
 		trail->undo();
 	}
+	return 0;
 }
 
 bool BTSolver::checkConsistency ( void )
