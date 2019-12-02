@@ -181,24 +181,22 @@ class BTSolver:
     # Engine Functions
     # ==================================================================
 
-    def solve ( self ):
+    def solve ( self, time_left=600):
+        if time_left <= 60:
+            return -1
+
+        start_time = time.time()
         if self.hassolution:
-            return
+            return 0
 
         # Variable Selection
         v = self.selectNextVariable()
 
         # check if the assigment is complete
         if ( v == None ):
-            for var in self.network.variables:
-
-                # If all variables haven't been assigned
-                if not var.isAssigned():
-                    print ( "Error" )
-
             # Success
             self.hassolution = True
-            return
+            return 0
 
         # Attempt to assign a value
         for i in self.getNextValues( v ):
@@ -210,13 +208,15 @@ class BTSolver:
             # Assign the value
             v.assignValue( i )
 
-            # Propagate constraints, check consistency, recurse
+            # Propagate constraints, check consistency, recur
             if self.checkConsistency():
-                self.solve()
-
+                elapsed_time = time.time() - start_time 
+                new_start_time = time_left - elapsed_time
+                self.solve(time_left=new_start_time)
+                
             # If this assignment succeeded, return
             if self.hassolution:
-                return
+                return 0
 
             # Otherwise backtrack
             self.trail.undo()
