@@ -303,6 +303,7 @@ public class BTSolver
 			// Otherwise backtrack
 			trail.undo();
 		}
+		return 0;
 	}
 
 	public boolean checkConsistency ( )
