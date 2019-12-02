@@ -218,10 +218,15 @@ vector<int> BTSolver::getTournVal ( Variable* v )
 // Engine Functions
 // =====================================================================
 
-void BTSolver::solve ( void )
+int BTSolver::solve ( float time_left)
 {
+	if (time_left <= 60.0)
+		return -1;
+	double elapsed_time = 0.0;
+    clock_t begin_clock = clock();
+
 	if ( hasSolution )
-		return;
+		return 0;
 
 	// Variable Selection
 	Variable* v = selectNextVariable();
@@ -233,14 +238,13 @@ void BTSolver::solve ( void )
 			// If all variables haven't been assigned
 			if ( ! ( var->isAssigned() ) )
 			{
-				cout << "Error" << endl;
-				return;
+				return 0;
 			}
 		}
 
 		// Success
 		hasSolution = true;
-		return;
+		return 0;
 	}
 
 	// Attempt to assign a value
@@ -254,12 +258,17 @@ void BTSolver::solve ( void )
 		v->assignValue( i );
 
 		// Propagate constraints, check consistency, recurse
-		if ( checkConsistency() )
-			solve();
+		if ( checkConsistency() ) {
+			clock_t end_clock = clock();
+			elapsed_time += (float)(end_clock - begin_clock)/ CLOCKS_PER_SEC;
+			double new_start_time = time_left - elapsed_time;
+			return solve(new_start_time);
+			
+		}
 
 		// If this assignment succeeded, return
 		if ( hasSolution )
-			return;
+			return 0;
 
 		// Otherwise backtrack
 		trail->undo();
