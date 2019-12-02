@@ -59,7 +59,7 @@ public class Main
 			if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
 				solver.checkConsistency();
 			}
-			solver.solve();
+			solver.solve(600.0);
 
 			if ( solver.hasSolution() )
 			{
@@ -100,7 +100,7 @@ public class Main
 				if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
 					solver.checkConsistency();
 				}
-				solver.solve();
+				solver.solve(600.0);
 
 				if ( solver.hasSolution() )
 					numSolutions++;
@@ -121,7 +121,7 @@ public class Main
 		if(cc.equals("norvigCheck") || cc.equals("forwardChecking") || cc.equals("tournCC")){
 			solver.checkConsistency();
 		}
-		solver.solve();
+		solver.solve(600.0);
 
 		if ( solver.hasSolution() )
 		{
