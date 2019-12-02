@@ -249,10 +249,14 @@ public class BTSolver
 	// Engine Functions
 	//==================================================================
 
-	public void solve ( )
+	public int solve (float time_left)
 	{
+		if(time_left <= 60.0) {
+			return -1;
+		}
+		long startTime = System.nanoTime();
 		if ( hasSolution )
-			return;
+			return 0;
 
 		// Variable Selection
 		Variable v = selectNextVariable();
@@ -264,14 +268,13 @@ public class BTSolver
 				// If all variables haven't been assigned
 				if ( ! var.isAssigned() )
 				{
-					System.out.println( "Error" );
-					return;
+					return 0;
 				}
 			}
 
 			// Success
 			hasSolution = true;
-			return;
+			return 0;
 		}
 
 		// Attempt to assign a value
@@ -285,12 +288,17 @@ public class BTSolver
 			v.assignValue( i );
 
 			// Propagate constraints, check consistency, recurse
-			if ( checkConsistency() )
-				solve();
+			if ( checkConsistency() ) {
+				long endTime = System.nanoTime();
+                long elapsedTime = (endTime - startTime);
+                float elapsedSecs = ((float)(endTime - startTime)) / 1000000000;
+                float new_start_time = time_left - elapsedSecs;
+				return solve(new_start_time);
+			}
 
 			// If this assignment succeeded, return
 			if ( hasSolution )
-				return;
+				return 0;
 
 			// Otherwise backtrack
 			trail.undo();
