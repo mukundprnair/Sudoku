@@ -262,7 +262,7 @@ int BTSolver::solve ( float time_left)
 			clock_t end_clock = clock();
 			elapsed_time += (float)(end_clock - begin_clock)/ CLOCKS_PER_SEC;
 			double new_start_time = time_left - elapsed_time;
-			return solve(new_start_time);
+			solve(new_start_time);
 			
 		}
 
