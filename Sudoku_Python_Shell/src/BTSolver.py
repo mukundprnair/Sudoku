@@ -212,7 +212,8 @@ class BTSolver:
             if self.checkConsistency():
                 elapsed_time = time.time() - start_time 
                 new_start_time = time_left - elapsed_time
-                self.solve(time_left=new_start_time)
+                if self.solve(time_left=new_start_time) == -1:
+                    return -1
                 
             # If this assignment succeeded, return
             if self.hassolution:
@@ -220,6 +221,8 @@ class BTSolver:
 
             # Otherwise backtrack
             self.trail.undo()
+        
+        return 0
 
     def checkConsistency ( self ):
         if self.cChecks == "forwardChecking":
