@@ -293,7 +293,10 @@ public class BTSolver
                 long elapsedTime = (endTime - startTime);
                 float elapsedSecs = ((float)(endTime - startTime)) / 1000000000;
                 float new_start_time = time_left - elapsedSecs;
-				solve(new_start_time);
+				int check_status = solve(new_start_time);
+				if(check_status == -1) {
+				    return -1;
+				}
 			}
 
 			// If this assignment succeeded, return
