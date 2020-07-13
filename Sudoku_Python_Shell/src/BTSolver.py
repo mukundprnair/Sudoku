@@ -120,14 +120,6 @@ class BTSolver:
         return None
 
     """
-        Part 2 TODO: Implement the Degree Heuristic
-
-        Return: The unassigned variable with the most unassigned neighbors
-    """
-    def getDegree ( self ):
-        return None
-
-    """
         Part 2 TODO: Implement the Minimum Remaining Value Heuristic
                        with Degree Heuristic as a Tie Breaker
 
@@ -240,9 +232,6 @@ class BTSolver:
     def selectNextVariable ( self ):
         if self.varHeuristics == "MinimumRemainingValue":
             return self.getMRV()
-
-        if self.varHeuristics == "Degree":
-            return self.getDegree()
 
         if self.varHeuristics == "MRVwithTieBreaker":
             return self.MRVwithTieBreaker()[0]
