@@ -62,6 +62,7 @@ bool BTSolver::arcConsistency ( void )
             }
         }
     }
+	
     if (!toAssign.empty())
     {
         for (int i = 0; i < toAssign.size(); ++i)

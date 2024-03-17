@@ -48,11 +48,35 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def forwardChecking ( self ):
-        return ({},False)
+        
+        
+        assignedVars = []
+        for c in self.network.getModifiedConstraints():
+            for v in c.vars:
+                if v.isAssigned():
+                    assignedVars.append(v)
+
+        while len(assignedVars) != 0:
+            av = assignedVars.pop(0)
+            for neighbor in self.network.getNeighborsOfVariable(av):
+                if neighbor.getDomain().size() == 0:
+                    return ({}, False)
+
+                if neighbor.isChangeable and not neighbor.isAssigned() and neighbor.getDomain().contains(av.getAssignment()):
+                    self.trail.push(neighbor)
+                    neighbor.removeValueFromDomain(av.getAssignment())
+                    if neighbor.getDomain().size() == 0:
+                        return ({}, False)
+
+        
+        return ({}, self.assignmentsCheck())
+
 
     # =================================================================
 	# Arc Consistency
 	# =================================================================
+
+    
     def arcConsistency( self ):
         assignedVars = []
         for c in self.network.constraints:
@@ -67,7 +91,7 @@ class BTSolver:
                     if neighbor.domain.size() == 1:
                         neighbor.assignValue(neighbor.domain.values[0])
                         assignedVars.append(neighbor)
-
+    
     
     """
         Part 2 TODO: Implement both of Norvig's Heuristics
@@ -87,7 +111,49 @@ class BTSolver:
                 The bool is true if assignment is consistent, false otherwise.
     """
     def norvigCheck ( self ):
-        return ({}, False)
+
+        #FC code:
+        to_return = dict()
+               
+        assignedVars = []
+        for c in self.network.getModifiedConstraints():
+            for v in c.vars:
+                if v.isAssigned():
+                    assignedVars.append(v)
+
+        while len(assignedVars) != 0:
+            av = assignedVars.pop(0)
+            for neighbor in self.network.getNeighborsOfVariable(av):
+                if neighbor.getDomain().size() == 0:
+                    return ({}, False)
+
+                if neighbor.isChangeable and not neighbor.isAssigned() and neighbor.getDomain().contains(av.getAssignment()):
+                    self.trail.push(neighbor)
+                    neighbor.removeValueFromDomain(av.getAssignment())
+                    if neighbor.getDomain().size() == 0:
+                        return ({}, False)
+
+
+        #Norvig's assignments
+        for constraint in self.network.getModifiedConstraints():
+            for value in range(1, self.gameboard.N + 1):      # for all possible values ex 1-9, 1-16
+                counter = 0
+                for var in constraint.vars:
+                    if var.domain.contains(value):
+                        counter += 1
+
+                if counter == 1:
+                    self.trail.push(var)
+                    var.assignValue(value)
+                    to_return[var] = value
+
+                if counter == 0:
+                    return ({}, False)
+
+
+        
+        return (to_return, self.assignmentsCheck())
+
 
     """
          Optional TODO: Implement your own advanced Constraint Propagation
@@ -117,7 +183,19 @@ class BTSolver:
         Return: The unassigned variable with the smallest domain
     """
     def getMRV ( self ):
-        return None
+        temp = self.getfirstUnassignedVariable()
+        if not temp:
+            return None
+            
+        smallest_var_size = 100000
+        smallest_var = None
+        for variable in self.network.variables:
+            if variable.domain.size() < smallest_var_size and not variable.assigned:
+                smallest_var = variable
+                smallest_var_size = variable.domain.size()
+        
+        return smallest_var
+
 
     """
         Part 2 TODO: Implement the Minimum Remaining Value Heuristic
@@ -128,7 +206,31 @@ class BTSolver:
                 If there is only one variable, return the list of size 1 containing that variable.
     """
     def MRVwithTieBreaker ( self ):
-        return None
+        size = self.getMRV().size()
+        varList = []
+        for variable in self.network.variables:
+            if variable.domain.size() == size and not variable.assigned:
+                varList.append(variable)
+
+        
+        if len(varList) == 1:
+            return varList
+
+        finalList = []
+        largestDomain = -1000000000
+        largestVar = None
+        for variable in varList:
+            neighborsSize = len(self.network.getNeighborsOfVariable(variable))
+            if neighborsSize > largestDomain:
+                largestDomain = neighborsSize
+                largestVar = variable
+
+        for variable in varList:   # if there's multiple with the same Degree and MRV
+            neighborsSize = len(self.network.getNeighborsOfVariable(variable))
+            if neighborsSize == largestDomain:
+                finalList.append(variable)
+        
+        return finalList
 
     """
          Optional TODO: Implement your own advanced Variable Heuristic
@@ -158,7 +260,76 @@ class BTSolver:
                 The LCV is first and the MCV is last
     """
     def getValuesLCVOrder ( self, v ):
-        return None
+        storage = dict()       # key: domain size    value: domain value
+
+        # listOne: EACH DOMAIN Value
+        list1 = list()
+        # listTwo: SAME SIZE BUT INIT TO 0
+        list2 = list()
+
+        # loop through domain 
+        #     loop through neighbors  
+        #         if value in domain
+        #             increment corresponding index in list2
+        for domain_value in v.getDomain().values:
+            list1.append(domain_value)
+            list2.append(0)
+
+        if len(list1) == 0:
+            return []
+        
+        neighbors = self.network.getNeighborsOfVariable(v)
+        for index in range(0, len(list1)):   # counts how many neighbors have this value in the domain
+            for neighbor in neighbors:  # for each neighbor
+                if not list1[index] in neighbor.getDomain().values:  # if that neighbor has the value in its domain
+                    list2[index] += 1
+        
+        list_zip = list(zip(list1, list2))
+
+        sorted(list_zip, key=lambda x: x[1])
+        
+        to_return = [tup[0] for tup in list_zip]
+        # print("First: ")
+        # print(to_return)
+        # return to_return
+            
+        for value in v.getDomain().values:  # hypothetically pick value
+            neighborsDomainSize = 0
+            
+            for neighbor in self.network.getNeighborsOfVariable(v):  # for each neighbor
+                if not value in neighbor.getDomain().values:  # if that neighbor has the value in its domain
+                    neighborsDomainSize += 1  # add that variables domain size - 1 bc we picked it 
+
+            storage[value] = neighborsDomainSize
+
+        # find the greatest value, apoend the key associated with value to storage list, remove from dictionary, repeat
+        
+        storage_list = []
+
+        last_domain = -1
+        last_key = -1
+        for i in range(0, len(storage)):
+            maxDomain = -1
+            maxKey = -1
+            for key in storage:
+                if storage[key] > maxDomain:
+                    maxDomain = storage[key]
+                    maxKey = key
+            if last_domain == maxDomain and maxKey < last_key:
+                storage.pop(maxKey)
+                storage_list.insert(i - 1, maxKey)
+                last_domain = maxDomain
+                last_key = maxKey
+                continue
+            storage.pop(maxKey)
+            storage_list.append(maxKey)
+            last_domain = maxDomain
+            last_key = maxKey
+        
+        # print("Second: ")
+        # print(storage_list)
+        return storage_list
+        # return storage_list
 
     """
          Optional TODO: Implement your own advanced Value Heuristic

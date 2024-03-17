@@ -19,10 +19,10 @@ def main ( ):
     args = sys.argv
 
     # Important Variables
-    file   = "";
-    var_sh = "";
-    val_sh = "";
-    cc     = "";
+    file   = ""
+    var_sh = ""
+    val_sh = ""
+    cc     = ""
 
     for arg in [args[i] for i in range(1, len(args))]:
         if arg == "MRV":
@@ -46,9 +46,9 @@ def main ( ):
             cc     = "tournCC"
 
         else:
-            file = arg;
+            file = arg
 
-    trail = Trail.Trail();
+    trail = Trail.Trail()
 
     if file == "":
         sudokudata = SudokuBoard.SudokuBoard( 3, 3, 7 )
@@ -73,12 +73,14 @@ def main ( ):
         listOfBoards = None
 
         try:
-            listOfBoards = os.listdir ( file )
+            listOfBoards = sorted(os.listdir ( file ))
         except:
             print ( "[ERROR] Failed to open directory." )
             return
 
         numSolutions = 0
+        
+        last_num_undo = 0
         for f in listOfBoards:
             print ( "Running board: " + str(f) )
             sudokudata = SudokuBoard.SudokuBoard( filepath=os.path.join( file, f ) )
@@ -89,7 +91,11 @@ def main ( ):
             solver.solve()
 
             if solver.hassolution:
-                numSolutions += 1;
+                numSolutions += 1
+            
+            num_undo = trail.getUndoCount() - last_num_undo
+            last_num_undo = trail.getUndoCount()
+            print ( "Backtracks: "  + str(num_undo) )
 
         print ( "Solutions Found: " + str(numSolutions) )
         print ( "Trail Pushes: " + str(trail.getPushCount()) )

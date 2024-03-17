@@ -15,8 +15,8 @@ def isValidRowValue(row, value, p, q, N, board):
 
 
 def isValidBlock(row, col, value, p, q, N, board):
-    rDiv = row // p;
-    cDiv = col // q;
+    rDiv = row // p
+    cDiv = col // q
     for i in range(rDiv * p, (rDiv + 1) * p):
         for j in range(cDiv * q, (cDiv + 1) * q):
             if board[i][j] == value:
